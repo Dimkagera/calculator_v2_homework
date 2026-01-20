@@ -1,0 +1,114 @@
+import functools
+
+
+def show_variations(ratio=2.1):
+    """Декоратор показывает результат на ratio больше и на ratio меньше"""
+
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(a, b):
+            # Выполняем оригинальную функцию
+            original_result = func(a, b)
+
+            # Рассчитываем варианты
+            increased = original_result + ratio
+            decreased = original_result - ratio
+
+            # Выводим результаты
+            operation_name = func.__name__.replace('_', ' ').title()
+            print(f"\n{operation_name}:")
+            print(f"  Оригинальный результат: {a} {func.__doc__} {b} = {original_result}")
+            print(f"  На {ratio} больше: {original_result} + {ratio} = {increased}")
+            print(f"  На {ratio} меньше: {original_result} - {ratio} = {decreased}")
+
+            # Возвращаем оригинальный результат для дальнейшего использования
+
+
+        return wrapper
+
+    return decorator
+
+
+# Декорируем математические операции
+@show_variations(2.1)
+def add(a, b):
+    """+"""
+    return a + b
+
+
+@show_variations(2.1)
+def subtract(a, b):
+    """-"""
+    return a - b
+
+
+@show_variations(2.1)
+def multiply(a, b):
+    """*"""
+    return a * b
+
+
+@show_variations(2.1)
+def divide(a, b):
+    """/"""
+    if b == 0:
+        print("Ошибка: Деление на ноль!")
+        return None
+    return a / b
+
+
+# Главная функция калькулятора
+def calculator():
+    print("=" * 40)
+    print("НЕОБЫЧНЫЙ КАЛЬКУЛЯТОР")
+    print("=" * 40)
+
+    while True:
+        try:
+            print("\nВыберите операцию:\n1. Сложение (+)\n2. Вычитание (-)\n3. Умножение (*)\n4. Деление (/)\n5. Выход")
+
+
+            choice = input("\nВаш выбор (1-5): ")
+
+            if choice == '5':
+                print("Выход из программы. До свидания!")
+                break
+
+            if choice not in ['1', '2', '3', '4']:
+                print("Ошибка: Выберите от 1 до 5!")
+                continue
+
+            # Ввод чисел
+            try:
+                num1 = float(input("Введите первое число: "))
+                num2 = float(input("Введите второе число: "))
+            except ValueError:
+                print("Ошибка: Введите корректные числа!")
+                continue
+
+            # Выполнение операции
+            if choice == '1':
+                result = add(num1, num2)
+                print(f"Финальный результат сложения: {result}")
+
+            elif choice == '2':
+                result = subtract(num1, num2)
+                print(f"Финальный результат вычитания: {result}")
+
+            elif choice == '3':
+                result = multiply(num1, num2)
+                print(f"Финальный результат умножения: {result}")
+
+            elif choice == '4':
+                result = divide(num1, num2)
+                if result is not None:
+                    print(f"Финальный результат деления: {result}")
+
+        except KeyboardInterrupt:
+            print("\n\nПрограмма прервана пользователем.")
+            break
+        except Exception as e:
+            print(f"Произошла ошибка: {e}")
+
+
+calculator()
